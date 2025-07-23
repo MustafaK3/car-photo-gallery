@@ -38,6 +38,11 @@
       </form>
       <ul id="tipsList"></ul>
     </section>
+    <!-- Modal for expanded image -->
+    <div id="modalOverlay" style="display:none;">
+      <span id="modalClose">&times;</span>
+      <img id="modalImg" src="" alt="Expanded Photo" />
+    </div>
   </main>
   <footer>
     <p>&copy; 2024 Car Photography Gallery</p>
@@ -93,6 +98,8 @@
           const img = document.createElement('img');
           img.src = photo.src;
           img.alt = photo.alt;
+          // Add click event for modal
+          img.onclick = function() { openModal(img.src, img.alt); };
           tile.appendChild(img);
           gallery.appendChild(tile);
         });
@@ -208,6 +215,8 @@
           const img = document.createElement('img');
           img.src = e.target.result;
           img.alt = 'Uploaded Car Photo';
+          // Add click event for modal
+          img.onclick = function() { openModal(img.src, img.alt); };
           newTile.appendChild(img);
           gallery.appendChild(newTile);
           saveGallery();
@@ -219,6 +228,27 @@
     });
 
     document.getElementById('removeDuplicatesBtn').addEventListener('click', removeDuplicates);
+
+    // --- Modal functionality ---
+    function openModal(src, alt) {
+      var modal = document.getElementById('modalOverlay');
+      var modalImg = document.getElementById('modalImg');
+      var modalClose = document.getElementById('modalClose');
+      modal.style.display = 'flex';
+      modalImg.src = src;
+      modalImg.alt = alt;
+      document.body.style.overflow = 'hidden';
+    }
+    document.getElementById('modalClose').onclick = function() {
+      document.getElementById('modalOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+    };
+    document.getElementById('modalOverlay').onclick = function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    };
 
     // --- Tips functionality ---
     function saveTips(tips) {

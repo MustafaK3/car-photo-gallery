@@ -201,6 +201,54 @@ footer {
   box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
 }
 
+#modalOverlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 10, 0.92);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.3s;
+}
+#modalOverlay[style*="display: flex"] {
+  display: flex !important;
+}
+#modalImg {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.7);
+  background: #222;
+  object-fit: contain;
+  margin-bottom: 1.5rem;
+}
+#modalClose {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  font-size: 2.5rem;
+  color: #ffd700;
+  cursor: pointer;
+  z-index: 1100;
+  background: rgba(30,30,30,0.7);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+#modalClose:hover {
+  background: #ffd700;
+  color: #222;
+}
+
 @media (max-width: 700px) {
   main {
     padding: 1rem;
