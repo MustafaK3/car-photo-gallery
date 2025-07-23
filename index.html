@@ -34,6 +34,11 @@
     <section id="misc" class="card" style="display:none;">
       <h2>Miscellaneous</h2>
       <p>Share your thoughts, tips, or anything else related to photography and cars!</p>
+      <form id="tipForm">
+        <textarea id="tipInput" rows="3" placeholder="Share a tip on taking or editing better photos..."></textarea>
+        <button type="submit">Add Tip</button>
+      </form>
+      <ul id="tipsList"></ul>
     </section>
   </main>
   <footer>
@@ -210,8 +215,37 @@
     });
 
     document.getElementById('removeDuplicatesBtn').addEventListener('click', removeDuplicates);
+
+    // --- Tips functionality ---
+    function saveTips(tips) {
+      localStorage.setItem('photoTips', JSON.stringify(tips));
+    }
+    function loadTips() {
+      const tips = JSON.parse(localStorage.getItem('photoTips') || '[]');
+      const tipsList = document.getElementById('tipsList');
+      tipsList.innerHTML = '';
+      tips.forEach(tip => {
+        const li = document.createElement('li');
+        li.textContent = tip;
+        tipsList.appendChild(li);
+      });
+    }
+    document.getElementById('tipForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const tipInput = document.getElementById('tipInput');
+      const tip = tipInput.value.trim();
+      if (tip.length === 0) return;
+      const tips = JSON.parse(localStorage.getItem('photoTips') || '[]');
+      tips.push(tip);
+      saveTips(tips);
+      tipInput.value = '';
+      loadTips();
+    });
+
+    // Load saved gallery and tips when page loads
     window.addEventListener('load', function() {
       loadGallery();
+      loadTips();
     });
   </script>
 </body>
