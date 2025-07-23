@@ -27,9 +27,7 @@
     </section>
     <section id="gallery">
       <h2>Car Photography Gallery</h2>
-      <div class="gallery" id="photoGallery">
-        <!-- No initial photos -->
-      </div>
+      <!-- Gallery is intentionally left empty -->
     </section>
     <section id="misc" class="card" style="display:none;">
       <h2>Miscellaneous</h2>
@@ -85,10 +83,10 @@
     // Function to load gallery from localStorage
     function loadGallery() {
       const savedGallery = localStorage.getItem('carGallery');
-      if (savedGallery) {
+      const gallery = document.getElementById('photoGallery');
+      if (gallery) gallery.innerHTML = '';
+      if (savedGallery && gallery) {
         const galleryData = JSON.parse(savedGallery);
-        const gallery = document.getElementById('photoGallery');
-        gallery.innerHTML = '';
         galleryData.forEach(photo => {
           const tile = document.createElement('div');
           tile.className = 'tile';
@@ -198,7 +196,13 @@
         }
         const reader = new FileReader();
         reader.onload = function(e) {
-          const gallery = document.getElementById('photoGallery');
+          let gallery = document.getElementById('photoGallery');
+          if (!gallery) {
+            gallery = document.createElement('div');
+            gallery.className = 'gallery';
+            gallery.id = 'photoGallery';
+            document.getElementById('gallery').appendChild(gallery);
+          }
           const newTile = document.createElement('div');
           newTile.className = 'tile';
           const img = document.createElement('img');
