@@ -30,71 +30,54 @@
       <div class="gallery" id="photoGallery">
         <div class="tile">
           <img src="IMG_0106.JPEG" alt="Red Acura NSX Close-up">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0107.JPEG" alt="Red Sports Car Hood Detail">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0124.JPEG" alt="Red Acura NSX Side View">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0125.JPEG" alt="Car Meet Scene">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0127.JPEG" alt="Red Mazda RX-7">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0128.JPEG" alt="Red Sports Car Front View">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0130.JPEG" alt="Red Sports Car Side Profile">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0131.JPEG" alt="Red Acura NSX Rear View">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0133.JPEG" alt="White Corvette C7 Z06">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0134.JPEG" alt="Yellow Corvette Hood Open">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0135.JPEG" alt="Corvette Detail Shot">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0136.JPEG" alt="White Corvette C7">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0137.JPEG" alt="Black Mitsubishi Eclipse">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0138.JPEG" alt="Black Eclipse Front View">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0139.JPEG" alt="Black Eclipse Side Profile">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0140.JPEG" alt="Car Meet Overview">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
         <div class="tile">
           <img src="IMG_0141.JPEG" alt="Car Meet Scene 2">
-          <button class="delete-btn" onclick="deletePhoto(this)">×</button>
         </div>
       </div>
     </section>
@@ -143,28 +126,9 @@
           img.src = photo.src;
           img.alt = photo.alt;
           
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.innerHTML = '×';
-          deleteBtn.onclick = function() { deletePhoto(this); };
-          
           tile.appendChild(img);
-          tile.appendChild(deleteBtn);
           gallery.appendChild(tile);
         });
-      }
-    }
-
-    // Function to delete photos
-    function deletePhoto(button) {
-      if (confirm('Are you sure you want to delete this photo?')) {
-        const tile = button.parentElement;
-        tile.style.transform = 'scale(0.8)';
-        tile.style.opacity = '0';
-        setTimeout(() => {
-          tile.remove();
-          saveGallery(); // Save after deletion
-        }, 300);
       }
     }
 
@@ -270,9 +234,9 @@
           tile.style.opacity = '0';
           setTimeout(() => {
             tile.remove();
+            saveGallery(); // Save after removing duplicates
           }, 300);
         });
-        saveGallery(); // Save after removing duplicates
         alert(`Removed ${duplicates.length} similar image(s)!`);
       }
     }
@@ -307,13 +271,7 @@
           img.src = e.target.result;
           img.alt = 'Uploaded Car Photo';
           
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'delete-btn';
-          deleteBtn.innerHTML = '×';
-          deleteBtn.onclick = function() { deletePhoto(this); };
-          
           newTile.appendChild(img);
-          newTile.appendChild(deleteBtn);
           gallery.appendChild(newTile);
           
           saveGallery(); // Save after each upload
