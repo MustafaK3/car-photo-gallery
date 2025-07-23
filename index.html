@@ -10,13 +10,13 @@
   <header>
     <h1>Car Photography Gallery</h1>
     <nav>
-      <a href="#gallery">Gallery</a>
-      <a href="#upload">Upload</a>
-      <a href="#misc">Miscellaneous</a>
+      <a href="#gallery" id="galleryTab">Gallery</a>
+      <a href="#upload" id="uploadTab">Upload</a>
+      <a href="#misc" id="miscTab">Miscellaneous</a>
     </nav>
   </header>
   <main>
-    <section id="upload" class="card">
+    <section id="upload" class="card" style="display:none;">
       <h2>Upload Your Photo</h2>
       <form id="uploadForm">
         <input type="file" id="fileInput" accept="image/*" multiple>
@@ -28,60 +28,10 @@
     <section id="gallery">
       <h2>Car Photography Gallery</h2>
       <div class="gallery" id="photoGallery">
-        <div class="tile">
-          <img src="IMG_0106.JPEG" alt="Red Acura NSX Close-up">
-        </div>
-        <div class="tile">
-          <img src="IMG_0107.JPEG" alt="Red Sports Car Hood Detail">
-        </div>
-        <div class="tile">
-          <img src="IMG_0124.JPEG" alt="Red Acura NSX Side View">
-        </div>
-        <div class="tile">
-          <img src="IMG_0125.JPEG" alt="Car Meet Scene">
-        </div>
-        <div class="tile">
-          <img src="IMG_0127.JPEG" alt="Red Mazda RX-7">
-        </div>
-        <div class="tile">
-          <img src="IMG_0128.JPEG" alt="Red Sports Car Front View">
-        </div>
-        <div class="tile">
-          <img src="IMG_0130.JPEG" alt="Red Sports Car Side Profile">
-        </div>
-        <div class="tile">
-          <img src="IMG_0131.JPEG" alt="Red Acura NSX Rear View">
-        </div>
-        <div class="tile">
-          <img src="IMG_0133.JPEG" alt="White Corvette C7 Z06">
-        </div>
-        <div class="tile">
-          <img src="IMG_0134.JPEG" alt="Yellow Corvette Hood Open">
-        </div>
-        <div class="tile">
-          <img src="IMG_0135.JPEG" alt="Corvette Detail Shot">
-        </div>
-        <div class="tile">
-          <img src="IMG_0136.JPEG" alt="White Corvette C7">
-        </div>
-        <div class="tile">
-          <img src="IMG_0137.JPEG" alt="Black Mitsubishi Eclipse">
-        </div>
-        <div class="tile">
-          <img src="IMG_0138.JPEG" alt="Black Eclipse Front View">
-        </div>
-        <div class="tile">
-          <img src="IMG_0139.JPEG" alt="Black Eclipse Side Profile">
-        </div>
-        <div class="tile">
-          <img src="IMG_0140.JPEG" alt="Car Meet Overview">
-        </div>
-        <div class="tile">
-          <img src="IMG_0141.JPEG" alt="Car Meet Scene 2">
-        </div>
+        <!-- No initial photos -->
       </div>
     </section>
-    <section id="misc" class="card">
+    <section id="misc" class="card" style="display:none;">
       <h2>Miscellaneous</h2>
       <p>Share your thoughts, tips, or anything else related to photography and cars!</p>
     </section>
@@ -91,11 +41,32 @@
   </footer>
 
   <script>
+    // Tab navigation logic
+    function showSection(sectionId) {
+      document.getElementById('upload').style.display = 'none';
+      document.getElementById('gallery').style.display = 'none';
+      document.getElementById('misc').style.display = 'none';
+      document.getElementById(sectionId).style.display = '';
+    }
+    document.getElementById('galleryTab').onclick = function(e) {
+      e.preventDefault();
+      showSection('gallery');
+    };
+    document.getElementById('uploadTab').onclick = function(e) {
+      e.preventDefault();
+      showSection('upload');
+    };
+    document.getElementById('miscTab').onclick = function(e) {
+      e.preventDefault();
+      showSection('misc');
+    };
+    // Show gallery by default
+    showSection('gallery');
+
     // Function to save gallery to localStorage
     function saveGallery() {
       const tiles = document.querySelectorAll('.tile');
       const galleryData = [];
-      
       tiles.forEach(tile => {
         const img = tile.querySelector('img');
         galleryData.push({
@@ -103,7 +74,6 @@
           alt: img.alt
         });
       });
-      
       localStorage.setItem('carGallery', JSON.stringify(galleryData));
     }
 
@@ -113,19 +83,13 @@
       if (savedGallery) {
         const galleryData = JSON.parse(savedGallery);
         const gallery = document.getElementById('photoGallery');
-        
-        // Clear existing gallery
         gallery.innerHTML = '';
-        
-        // Add saved photos
         galleryData.forEach(photo => {
           const tile = document.createElement('div');
           tile.className = 'tile';
-          
           const img = document.createElement('img');
           img.src = photo.src;
           img.alt = photo.alt;
-          
           tile.appendChild(img);
           gallery.appendChild(tile);
         });
@@ -137,25 +101,16 @@
       return new Promise((resolve) => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
-        // Set canvas size for consistent comparison
         canvas.width = 32;
         canvas.height = 32;
-        
-        // Draw image to canvas
         ctx.drawImage(img, 0, 0, 32, 32);
-        
-        // Get image data
         const imageData = ctx.getImageData(0, 0, 32, 32);
         const data = imageData.data;
-        
-        // Create a simple hash by averaging RGB values
         let hash = '';
         for (let i = 0; i < data.length; i += 4) {
           const avg = Math.round((data[i] + data[i + 1] + data[i + 2]) / 3);
           hash += avg.toString(16).padStart(2, '0');
         }
-        
         resolve(hash);
       });
     }
@@ -164,14 +119,11 @@
     function calculateSimilarity(hash1, hash2) {
       let differences = 0;
       const minLength = Math.min(hash1.length, hash2.length);
-      
       for (let i = 0; i < minLength; i += 2) {
         const val1 = parseInt(hash1.substr(i, 2), 16);
         const val2 = parseInt(hash2.substr(i, 2), 16);
         differences += Math.abs(val1 - val2);
       }
-      
-      // Calculate similarity percentage (0-100)
       const maxDiff = 255 * (minLength / 2);
       return ((maxDiff - differences) / maxDiff) * 100;
     }
@@ -181,28 +133,15 @@
       const tiles = document.querySelectorAll('.tile');
       const duplicates = [];
       const imageHashes = [];
-      
-      // Show loading message
-      const loadingMsg = 'Analyzing images for duplicates...';
-      alert(loadingMsg);
-      
-      // Create hashes for all images
+      alert('Analyzing images for duplicates...');
       for (let i = 0; i < tiles.length; i++) {
         const img = tiles[i].querySelector('img');
         const hash = await createImageHash(img);
-        imageHashes.push({
-          tile: tiles[i],
-          hash: hash,
-          alt: img.alt
-        });
+        imageHashes.push({ tile: tiles[i], hash: hash, alt: img.alt });
       }
-      
-      // Compare images for similarity
       for (let i = 0; i < imageHashes.length; i++) {
         for (let j = i + 1; j < imageHashes.length; j++) {
           const similarity = calculateSimilarity(imageHashes[i].hash, imageHashes[j].hash);
-          
-          // Consider images similar if they're 90% or more similar
           if (similarity >= 90) {
             duplicates.push({
               original: imageHashes[i].tile,
@@ -214,19 +153,15 @@
           }
         }
       }
-      
       if (duplicates.length === 0) {
         alert('No similar images found in your gallery!');
         return;
       }
-      
-      // Show duplicates and ask which to remove
       let message = `Found ${duplicates.length} similar image(s):\n\n`;
       duplicates.forEach((dup, index) => {
         message += `${index + 1}. "${dup.duplicateAlt}" (${Math.round(dup.similarity)}% similar to "${dup.originalAlt}")\n`;
       });
       message += '\nClick OK to remove all similar images, or Cancel to keep them.';
-      
       if (confirm(message)) {
         duplicates.forEach(dup => {
           const tile = dup.duplicate;
@@ -234,7 +169,7 @@
           tile.style.opacity = '0';
           setTimeout(() => {
             tile.remove();
-            saveGallery(); // Save after removing duplicates
+            saveGallery();
           }, 300);
         });
         alert(`Removed ${duplicates.length} similar image(s)!`);
@@ -244,51 +179,37 @@
     // Upload functionality
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
       const fileInput = document.getElementById('fileInput');
       const files = fileInput.files;
-      
       if (files.length === 0) {
         alert('Please select at least one image file.');
         return;
       }
-      
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
         if (!file.type.startsWith('image/')) {
           alert('Please select only image files.');
           continue;
         }
-        
         const reader = new FileReader();
         reader.onload = function(e) {
           const gallery = document.getElementById('photoGallery');
           const newTile = document.createElement('div');
           newTile.className = 'tile';
-          
           const img = document.createElement('img');
           img.src = e.target.result;
           img.alt = 'Uploaded Car Photo';
-          
           newTile.appendChild(img);
           gallery.appendChild(newTile);
-          
-          saveGallery(); // Save after each upload
+          saveGallery();
         };
-        
         reader.readAsDataURL(file);
       }
-      
-      // Clear the file input
       fileInput.value = '';
       alert('Photos uploaded successfully and saved!');
     });
 
-    // Add event listener for remove duplicates button
     document.getElementById('removeDuplicatesBtn').addEventListener('click', removeDuplicates);
-
-    // Load saved gallery when page loads
     window.addEventListener('load', function() {
       loadGallery();
     });
